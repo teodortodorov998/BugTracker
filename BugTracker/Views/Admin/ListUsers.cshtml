@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<section class="table">
+    <h1 class="title">List of Users</h1>
+    <a class="table-btn" asp-area="Identity" asp-page="/Account/Register">Create</a>
+    <table class="content-table">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Email</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Email</td>
+                </tr>
+
+            }
+        </tbody>
+    </table> 
+    </section>

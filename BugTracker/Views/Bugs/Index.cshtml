@@ -1,0 +1,175 @@
+﻿@model IEnumerable<BugTracker.Models.Bug>
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+@{
+    ViewData["Title"] = "Index";
+    var users = userManager.GetUsersInRoleAsync("Developer").Result.Select(u => u.Email).ToList();
+    ViewBag.Users = users;
+}
+
+<section class="table">
+    <h2 class="title">Bugs</h2>
+    <div class="buttons-above-table">
+        @if (User.IsInRole("QA Engineer") || User.IsInRole("Admin"))
+        {
+            <a class="table-btn" asp-action="Create">Report New</a>
+
+        }
+        <form id="search-form" asp-action="ShowSearchResultsIndex">
+            <div class="form-group">
+                <label for="SearchPhrase">Search:</label>
+                <select name="SearchPhrase" id="search-phrase"></select>
+            </div>
+            <div class="form-group">
+                <label for="SearchOption">By:</label>
+                <select name="SearchOption" id="search-options"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn" />
+            </div>
+        </form>
+        @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+        {
+        <form id="search-form" asp-action="ShowBugsOfDev">
+            <div class="form-group">
+                <label for="email">Bugs by Dev:</label>
+                <select name="email" id="bugs-by-dev">
+                    @foreach (var item in users)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn" />
+            </div>
+        </form>
+        }
+        <a class="table-btn" asp-action="ShowResolved">Resolved</a>
+    </div>
+
+
+
+
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Severity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Priority)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Reporter)
+                </th>
+                <th>
+                    Assigned Dev
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Updated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Project)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Severity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Priority)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BugType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Reporter)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updated)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Project.Name)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        @if (User.IsInRole("QA Engineer") || User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        window.onload = function () {
+            var types = {
+                'BugType': ['Functional', 'UI', 'Input', 'System', 'Visual'],
+                'Priority': ['Low', 'Medium', 'High', 'Immediate'],
+                'Severity': ['Low', 'Medium', 'High', 'Critical'],
+                'Status': ['New', 'Assigned', 'Accepted', 'Resolved', 'Verified', 'Incomplete', 'Invalid', 'Obsolete', 'Infeasible']
+            },
+                //grabs references to the two drop-downs
+                type_select = document.querySelector('#search-options'),
+                option_select = document.querySelector('#search-phrase');
+
+            // populates the types drop-down
+            setOptions(type_select, Object.keys(types));
+            // populates the options drop-down
+            setOptions(option_select, types[type_select.value]);
+
+            // attaches a change event listener to the types drop-down
+            type_select.addEventListener('change', function () {
+                // gets the options in the selected type
+                setOptions(option_select, types[type_select.value]);
+            });
+
+            function setOptions(dropDown, options) {
+                // clears out any existing values
+                dropDown.innerHTML = '';
+                // inserts the new options into the drop-down
+                options.forEach(function (value) {
+                    dropDown.innerHTML += '<option name="' + value + '">' + value + '</option>';
+                });
+            }
+        };
+    </script>
+}

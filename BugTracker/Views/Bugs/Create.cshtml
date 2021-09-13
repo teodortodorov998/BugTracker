@@ -1,0 +1,59 @@
+﻿@model BugTracker.Models.Bug
+@using BugTracker.Models.Enumerables;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    ViewData["Title"] = "Create";
+
+    var users = userManager.GetUsersInRoleAsync("Developer").Result.Select(u => u.UserName).ToList();
+    ViewBag.Users = users;
+}
+
+<section class="form">
+    <h1 class="title">Report Bug</h1>
+    <div class="form-wrap">
+        <form id="create-bug" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Severity" class="control-label"></label>
+                <select asp-for="Severity" asp-items="Html.GetEnumSelectList<Severity>()" class="form-control"></select>
+                <span asp-validation-for="Severity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Priority" class="control-label"></label>
+                <select asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()" class="form-control"></select>
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" asp-items="Html.GetEnumSelectList<Status>()" class="form-control"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BugType" class="control-label">Type</label>
+                <select asp-for="BugType" asp-items="Html.GetEnumSelectList<BugType>()" class="form-control"></select>
+                <span asp-validation-for="BugType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Summary" class="control-label"></label>
+                <textarea rows="4" cols="50" asp-for="Summary" class="form-control"></textarea>
+                <span asp-validation-for="Summary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProjectId" class="control-label">Project</label>
+                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Report" class="btn btn-primary" />
+            </div>
+        </form>
+        </div>
+    <div>
+        <a class="lower-btn" asp-action="Index">Back to List</a>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,96 @@
+﻿@model BugTracker.Models.Bug
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    ViewData["Title"] = "Details";
+
+    var userId = userManager.GetUserId(User);
+}
+
+
+<section class="details">
+    <h1 class="title">Details</h1>
+    <dl id="bug-details">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Severity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Severity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt>
+            Type
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BugType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Reporter)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Reporter)
+        </dd>
+        <dt>
+            Assigned Dev
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Summary)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Summary)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Project)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Project.Name)
+        </dd>
+    </dl>
+
+    <div class="lower-buttons">
+        <a class="lower-btn" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        @if (User.IsInRole("Developer") || User.IsInRole("Admin"))
+        {
+            <a class="lower-btn" asp-action="ShowAssignedBugs" asp-route-id="@userId">Back to My Bugs</a>
+            <a class="lower-btn" asp-action="BugsOfProject" asp-route-id="@Model.ProjectId">Back to Project Bugs List</a>
+        }
+        @if (User.IsInRole("Manager") || User.IsInRole("QA Engineer") || User.IsInRole("Admin"))
+        {
+            <a class="lower-btn" asp-action="Index">Back to Bugs</a>
+            <a class="lower-btn" asp-action="BugsOfProject" asp-route-id="@Model.ProjectId">Back to the Project Bugs</a>
+        }
+    </div>
+</section>

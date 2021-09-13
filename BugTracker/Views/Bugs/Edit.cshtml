@@ -1,0 +1,254 @@
+﻿@model BugTracker.Models.Bug
+@using BugTracker.Models.Enumerables;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    ViewData["Title"] = "Edit";
+
+    var users = userManager.GetUsersInRoleAsync("Developer").Result.Select(u => u.UserName).ToList();
+    ViewBag.Users = users;
+
+    var userId = userManager.GetUserId(User);
+}
+
+<section class="form">
+<h1 class="title">Edit Bug</h1>
+    <div class="form-wrap">
+        <form id="edit-bug" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="Id" />
+            @if (User.IsInRole("Manager"))
+            {
+                <div class="form-group" id="severity">
+                    <label asp-for="Severity"></label>
+                    <select asp-for="Severity" asp-items="Html.GetEnumSelectList<Severity>()" readonly></select>
+                    <span asp-validation-for="Severity"></span>
+                </div>
+                <div class="form-group" id="priority">
+                    <label asp-for="Priority" ></label>
+                    <select asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()" readonly></select>
+                    <span asp-validation-for="Priority"></span>
+                </div>
+                <div class="form-group" id="status">
+                    <label asp-for="Status"></label>
+                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                    <span asp-validation-for="Status"></span>
+                </div>
+                <div class="form-group" id="bug-type">
+                    <label asp-for="BugType">Type</label>
+                    <select asp-for="BugType" asp-items="Html.GetEnumSelectList<BugType>()" readonly></select>
+                    <span asp-validation-for="BugType"></span>
+                </div>
+                <div class="form-group" id="reporter">
+                    <label asp-for="Reporter" class="control-label"></label>
+                    <input asp-for="Reporter" class="form-control" readonly />
+                    <span asp-validation-for="Reporter"></span>
+                </div>
+                <div class="form-group" id="selected-dev">
+                    <label asp-for="ApplicationUserId">Assigned Dev</label>
+                    <select asp-for="ApplicationUserId" class="form-control" asp-items="ViewBag.ApplicationUserId"></select>
+                </div>
+                <div class="form-group" id="created">
+                    <label asp-for="Created"></label>
+                    <input type="text" class="date-time" asp-for="Created" readonly />
+                    <span asp-validation-for="Created"></span>
+                </div>
+                <div class="form-group" id="updated">
+                    <label asp-for="Updated">Last Updated</label>
+                    <input type="text" class="date-time" asp-for="Updated" readonly />
+                    <span asp-validation-for="Updated"></span>
+                </div>
+                <div class="form-group" id="summary">
+                    <label asp-for="Summary"></label>
+                    <textarea rows="4" cols="50" asp-for="Summary" readonly></textarea>
+                    <span asp-validation-for="Summary"></span>
+                </div>
+                <div class="form-group" id="project-id">
+                    <label asp-for="ProjectId">Project</label>
+                    <select asp-for="ProjectId" asp-items="ViewBag.ProjectId" readonly></select>
+                    <span asp-validation-for="ProjectId"></span>
+                </div>
+            }
+
+            @if (User.IsInRole("QA Engineer"))
+            {
+                <div class="form-group" id="severity">
+                    <label asp-for="Severity"></label>
+                    <select asp-for="Severity" asp-items="Html.GetEnumSelectList<Severity>()"></select>
+                    <span asp-validation-for="Severity"></span>
+                </div>
+                <div class="form-group" id="priority">
+                    <label asp-for="Priority"></label>
+                    <select asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()"></select>
+                    <span asp-validation-for="Priority"></span>
+                </div>
+                <div class="form-group" id="status">
+                    <label asp-for="Status"></label>
+                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                    <span asp-validation-for="Status"></span>
+                </div>
+                <div class="form-group" id="bug-type">
+                    <label asp-for="BugType"></label>
+                    <select asp-for="BugType" asp-items="Html.GetEnumSelectList<BugType>()"></select>
+                    <span asp-validation-for="BugType"></span>
+                </div>
+                <div class="form-group" id="reporter">
+                    <label asp-for="Reporter"></label>
+                    <input asp-for="Reporter" readonly />
+                    <span asp-validation-for="Reporter"></span>
+                </div>
+                <div class="form-group" id="selected-dev">
+                    <label asp-for="ApplicationUserId">Assigned Dev</label>
+                    <select asp-for="ApplicationUserId" class="form-control" asp-items="ViewBag.ApplicationUserId" readonly></select>
+                </div>
+                <div class="form-group" id="created">
+                    <label asp-for="Created"></label>
+                    <input type="text" class="date-time" asp-for="Created" readonly />
+                    <span asp-validation-for="Created"></span>
+                </div>
+                <div class="form-group" id="updated">
+                    <label asp-for="Updated">Last Updated</label>
+                    <input type="text" class="date-time" asp-for="Updated" readonly />
+                    <span asp-validation-for="Updated"></span>
+                </div>
+                <div class="form-group" id="summary">
+                    <label asp-for="Summary"></label>
+                    <textarea rows="4" cols="50" asp-for="Summary"></textarea>
+                    <span asp-validation-for="Summary"></span>
+                </div>
+                <div class="form-group" id="project-id">
+                    <label asp-for="ProjectId">Project</label>
+                    <select asp-for="ProjectId" asp-items="ViewBag.ProjectId" readonly></select>
+                    <span asp-validation-for="ProjectId"></span>
+                </div>
+            }
+
+            @if (User.IsInRole("Developer"))
+            {
+                <div class="form-group" id="severity">
+                    <label asp-for="Severity"></label>
+                    <select asp-for="Severity" asp-items="Html.GetEnumSelectList<Severity>()" readonly></select>
+                    <span asp-validation-for="Severity"></span>
+                </div>
+                <div class="form-group" id="priority">
+                    <label asp-for="Priority"></label>
+                    <select asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()" readonly></select>
+                    <span asp-validation-for="Priority"></span>
+                </div>
+                <div class="form-group" id="status">
+                    <label asp-for="Status"></label>
+                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                    <span asp-validation-for="Status"></span>
+                </div>
+                <div class="form-group" id="bug-type">
+                    <label asp-for="BugType"></label>
+                    <select asp-for="BugType" asp-items="Html.GetEnumSelectList<BugType>()" readonly></select>
+                    <span asp-validation-for="BugType"></span>
+                </div>
+                <div class="form-group" id="reporter">
+                    <label asp-for="Reporter"></label>
+                    <input asp-for="Reporter" readonly />
+                    <span asp-validation-for="Reporter"></span>
+                </div>
+                <div class="form-group" id="selected-dev">
+                    <label asp-for="ApplicationUserId">Assigned Dev</label>
+                    <select asp-for="ApplicationUserId" class="form-control" asp-items="ViewBag.ApplicationUserId" readonly></select>
+                </div>
+                <div class="form-group" id="created">
+                    <label asp-for="Created"></label>
+                    <input type="text" class="date-time" asp-for="Created" readonly />
+                    <span asp-validation-for="Created"></span>
+                </div>
+                <div class="form-group" id="updated">
+                    <label asp-for="Updated">Last Updated</label>
+                    <input type="text" class="date-time" asp-for="Updated" readonly />
+                    <span asp-validation-for="Updated"></span>
+                </div>
+                <div class="form-group" id="summary">
+                    <label asp-for="Summary"></label>
+                    <textarea rows="4" cols="50" asp-for="Summary" readonly></textarea>
+                    <span asp-validation-for="Summary"></span>
+                </div>
+                <div class="form-group" id="project-id">
+                    <label asp-for="ProjectId">Project</label>
+                    <select asp-for="ProjectId" asp-items="ViewBag.ProjectId" readonly></select>
+                    <span asp-validation-for="ProjectId"></span>
+                </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group" id="severity">
+                    <label asp-for="Severity"></label>
+                    <select asp-for="Severity" asp-items="Html.GetEnumSelectList<Severity>()"></select>
+                    <span asp-validation-for="Severity"></span>
+                </div>
+                <div class="form-group" id="priority">
+                    <label asp-for="Priority"></label>
+                    <select asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()"></select>
+                    <span asp-validation-for="Priority"></span>
+                </div>
+                <div class="form-group" id="status">
+                    <label asp-for="Status"></label>
+                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                    <span asp-validation-for="Status"></span>
+                </div>
+                <div class="form-group" id="bug-type">
+                    <label asp-for="BugType"></label>
+                    <select asp-for="BugType" asp-items="Html.GetEnumSelectList<BugType>()"></select>
+                    <span asp-validation-for="BugType"></span>
+                </div>
+                <div class="form-group" id="reporter">
+                    <label asp-for="Reporter"></label>
+                    <input asp-for="Reporter"/>
+                    <span asp-validation-for="Reporter"></span>
+                </div>
+                <div class="form-group" id="selected-dev">
+                    <label asp-for="ApplicationUserId">Assigned Dev</label>
+                    <select asp-for="ApplicationUserId" class="form-control" asp-items="ViewBag.ApplicationUserId"></select>
+                </div>
+                <div class="form-group" id="created">
+                    <label asp-for="Created"></label>
+                    <input type="text" class="date-time" asp-for="Created"/>
+                    <span asp-validation-for="Created"></span>
+                </div>
+                <div class="form-group" id="updated">
+                    <label asp-for="Updated">Last Updated</label>
+                    <input type="text" class="date-time" asp-for="Updated"/>
+                    <span asp-validation-for="Updated"></span>
+                </div>
+                <div class="form-group" id="summary">
+                    <label asp-for="Summary"></label>
+                    <textarea rows="4" cols="50" asp-for="Summary"></textarea>
+                    <span asp-validation-for="Summary"></span>
+                </div>
+                <div class="form-group" id="project-id">
+                    <label asp-for="ProjectId">Project</label>
+                    <select asp-for="ProjectId" asp-items="ViewBag.ProjectId"></select>
+                    <span asp-validation-for="ProjectId"></span>
+                </div>
+            }
+            <div id="save-btn">
+                <input type="submit" value="Save" class="btn" />
+            </div>
+        </form>
+    </div>
+
+    <div class="lower-buttons">
+        @if (User.IsInRole("Developer") || User.IsInRole("Admin"))
+        {
+            <a class="lower-btn" asp-action="ShowAssignedBugs" asp-route-id="@userId">Back to My Bugs</a>
+            <a class="lower-btn" asp-action="BugsOfProject" asp-route-id="@Model.ProjectId">Back to Project Bugs List</a>
+        }
+
+        @if (User.IsInRole("Manager") || User.IsInRole("QA Engineer") || User.IsInRole("Admin"))
+        {
+            <a class="lower-btn" asp-action="Index">Back to Bug List</a>
+            <a class="lower-btn" asp-action="BugsOfProject" asp-route-id="@Model.ProjectId">Back to the Project Bugs</a>
+        }
+    </div>
+    </section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

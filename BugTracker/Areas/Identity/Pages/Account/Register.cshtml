@@ -1,0 +1,56 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    var roles = (List<IdentityRole>)ViewData["roles"];
+}
+
+
+
+<div class="user-form">
+    @if (User.IsInRole("Admin"))
+    {
+        <h1 class="title">Create User</h1>
+    }else
+    {
+        <h1 class="title">@ViewData["Title"]</h1>
+    }
+    <div class="form-wrap">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input type="text" asp-for="Input.Email" class="form-control" />
+                <div class="validation" asp-validation-for="Input.Email" class="text-danger"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input type="password" asp-for="Input.Password" class="form-control" />
+                <div class="validation" asp-validation-for="Input.Password" class="text-danger"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input type="password" asp-for="Input.ConfirmPassword" class="form-control" />
+                <div class="validation" asp-validation-for="Input.ConfirmPassword" class="text-danger"></div>
+            </div>
+            @*Added role input*@
+            <div class="form-group">
+                <label asp-for="Input.Name">Role</label>
+                <select asp-for="Input.Name" asp-items='new SelectList(roles,"Id","Name")'></select>
+                <div class="validation" asp-validation-for="Input.Name"></div>
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <button type="submit" class="btn">Create</button>
+            }else
+            {
+            <button type="submit" class="btn">Register</button>
+            }
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

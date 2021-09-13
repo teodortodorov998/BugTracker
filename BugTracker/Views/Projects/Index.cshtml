@@ -1,0 +1,68 @@
+﻿@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Data;
+@using System.Linq;
+@inject ApplicationDbContext db;
+
+@{
+    ViewData["Title"] = "Index";
+    
+}
+
+<section class="table">
+    <h2 class="title">Projects</h2>
+    @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+    {
+        <a class="table-btn" asp-action="Create">Create New</a>
+    }
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    Issues
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Manager)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Deadline)
+                </th>
+                @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                {
+                <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var issues = db.Project.SelectMany(i => i.Bugs).Where(i => i.ProjectId == item.Id).Count();
+                <tr>
+                    <td>
+                        <a id="project-link" asp-controller="Bugs" asp-action="BugsOfProject" asp-route-id="@item.Id">@item.Name</a>
+                    </td>
+                    <td>
+                        @issues
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Manager)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Deadline)
+                    </td>
+                    @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                    {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+
